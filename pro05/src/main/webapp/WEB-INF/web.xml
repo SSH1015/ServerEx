@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+<!-- 서블릿을 맵핑 작업 후 서블릿 인식가능 -->
+<servlet> <!-- 서블릿 선언 -->
+	<servlet-name>FirstServlet</servlet-name> <!-- 사용자 임의지정 -->
+	<servlet-class>pro05.ex01.FirstServlet</servlet-class> <!-- 서블릿 파일 경로(패키지.클래스) -->
+</servlet>
+<servlet-mapping> <!-- 외부와 서블릿을 연결 -->
+	<servlet-name>FirstServlet</servlet-name> <!-- 위에 사용할 클래스이름과 동일 -->
+	<url-pattern>/First</url-pattern>  <!-- 접속주소 -->
+</servlet-mapping>
+
+</web-app>
