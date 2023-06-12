@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *Mapper.xml 정의->*(테이블명)Mapper.xml -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- select, insert, update, delete, JSTL -->
+<!-- namespace 다른파일의 namespace 중복이 불가능, id는 다른파일의 id와 중복이 가능 -->
+<!-- parameterType="입력형식"=>VO로 전달받는 값은 생략이 가능,  resultType="결과형식" --> 
+<mapper namespace="boardMapper">
+	<!-- 게시글 전체 조회 -->
+	<select id="selectList" resultType="com.spring.member.vo.boardVO">
+		SELECT bno, title, content, writer, regdate, viewcnt FROM board 
+	</select>
+	<!-- 게시글 등록 -->
+	<insert id="insert">
+		INSERT INTO board(title, content, writer) VALUES (#{title}, #{content}, #{writer})
+	</insert>
+	<!-- 게시글 상세 조회 -->
+	<!-- 게시글+회원관리 결합해서 필요한 필드만 추출 -->
+	<!-- Left Join -->
+	<!-- select 테이블명.필드 from 테이블명 별칭(알파벳) left join 참조테이블 별칭 on 테이블.필드 = 참조테이블.필드 -->
+	<select id="view" resultType="com.spring.member.vo.boardVO">
+		SELECT a.bno, a.title, a.content, a.writer, a.regdate, a.viewcnt, b.username 
+		FROM board a left join member b on a.writer = b.userid WHERE bno=#{bno}
+	</select>
+	<!-- 게시글 수정 -->
+	<update id="update">
+		UPDATE board SET title=#{title}, content=#{content}, writer=#{writer} WHERE bno=#{bno}
+	</update>
+	<!-- 게시글 삭제 -->
+	<delete id="delete">
+		DELETE FROM board WHERE bno=#{bno}
+	</delete>
+	<!-- 게시글 조회수 증가(viewcnt) -->
+	<!-- 해당 게시글에 조회수를 1증가 -->
+	<update id="increaseViewcnt">
+		UPDATE board set viewcnt = viewcnt+1 WHERE bno=#{bno}
+	</update>
+	
+	<!-- 게시글 검색기능을 추가 -->
+	<!-- 제목+이름, 제목(title), 이름(writer) -->
+	<!-- 모든 조회 + 옵션으로 추가기능 -->
+	<!-- 질의어를 추가 include refid="추가" -->
+	<select id="listAll" resultType="com.spring.member.vo.boardVO">
+		SELECT bno, title, content, writer, regdate, viewcnt FROM board 
+		<include refid="search"></include> <!-- 질의어에 해당부분을 추가 -->
+	</select> 
+	<!-- sql의 일부분을 분리해서 선언할 때 -->
+	<!-- == 같은것 찾을 때, like 포함되어 있는 것 찾을 때 -->
+	<!-- writer like 홍길동%-시작하는 단어, %홍길동-끝나는 단어, %홍길동%-포함된 단어  -->
+	<sql id = "search">
+		<choose>
+			<when test="searchOption == 'all'">
+				<!-- 모든곳에서 조회 -->
+				WHERE (writer like concat('%',#{keyword},'%')
+				OR title like concat('%',#{keyword},'%')
+				OR content like concat('%',#{keyword},'%'))
+			</when>
+			<otherwise>
+				<!-- 해당부분에서만 조회 -->
+				WHERE (${searchOption} like concat('%',#{keyword},'%'))
+			</otherwise>
+		</choose>		
+	</sql>
+
+</mapper>
+<!-- mapper를 완성한 후에 dao로 가서 작업 -->

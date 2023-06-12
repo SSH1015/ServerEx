@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- web 2.5->3.1변경 -->
+<web-app version="3.1" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_3_1.xsd">
+
+	<!-- 환경파일의 위치 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+	</context-param>
+	
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 외부에서 요청이 있을 때 어디에서 작업을 진행할 건지 결정(servlet-context.xml)-->
+	<!-- 연결할 작업파일들의 정보가 있는 파일(Controller, DAO, Service 패키지) -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup> <!-- 서버구동시 바로 실행 -->
+	</servlet>
+	<!-- servlet(정의)와 servlet-mapping(외부요청) -->	
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name> <!-- appServlet으로 가서 처리 -->
+		<url-pattern>/</url-pattern> <!-- 외부에서 localhost:8080/ 요청이 오면 -->
+	</servlet-mapping>
+	
+	<!-- 문자셋 -->
+	<filter> <!-- 필터 정의 -->
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param><!-- 클래스에 전달할 값 -->
+			<param-name>encoding</param-name> <!-- 변수명 -->
+			<param-value>UTF-8</param-value> <!-- 값   encoding=UTF-8 -->
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name> 
+			<param-value>true</param-value> 
+		</init-param>
+	</filter>
+	<filter-mapping> <!-- 외부에서 요청이 왔을 때 -->
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern> <!--  외부에서 localhost:8080/시작 뒤에 상관없이 -->
+	</filter-mapping>
+
+</web-app>
