@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html leng="ko">
+<head>
+<meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Google Maps API Example</title>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_ffEuRRivwAyMl_II_x0UlRZnWTHDdas&region=KR&language=ko&callback=initMap" async defer></script>
+    <script>
+    	function initMap() { // 지도 요청 시 callback으로 호출될 메서드 부분으로 지도를 맨처음 초기화하고, 표시해주는 함수
+           
+            var myLatLng = { lat: 37.5, lng: 127.0 };
+            
+
+            // 지도 생성
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: myLatLng
+            });
+
+            // 마커 생성
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Hello World!'
+            });
+            
+        }
+        
+    </script>
+</head>
+<body>
+    <div id="map" style="height : 600px"></div>
+
+</body>
+</html>
