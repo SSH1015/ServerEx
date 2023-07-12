@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *Mapper.xml 정의->*(테이블명)Mapper.xml -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cataract">
+
+<select id="CtList" resultType="com.spring.domain.cataractVO">
+		SELECT c_num, c_id, c_name, c_catecode, c_detail, c_regdate, c_updatedate, c_img, c_simg FROM cataract order by c_id
+</select>
+  <insert id="Ctinsert">
+  INSERT INTO cataract(c_img, c_name, c_catecode, c_detail, c_regdate) 
+  VALUES (#{c_img},#{c_name},#{c_catecode},#{c_detail},#{c_regdate})
+  </insert>
+  
+  <!-- 03. 게시글 상세보기 조회 -->
+  <select id="Ctview" resultType="com.spring.domain.cataractVO">
+  SELECT * FROM cataract
+  WHERE c_num = #{c_num}
+  </select>
+
+  <!--  05. 게시글 수정처리 -->
+  <update id = "CtupdateArticle">
+  UPDATE cataract SET
+  c_id=#{c_id}, c_name=#{c_name}, c_detail=#{c_detail}
+  WHERE c_num=#{c_num}
+  </update>
+  
+  <!--  06. 게시글 삭제처리 -->
+  <delete id="deleteArticle">
+  DELETE FROM cataract
+  WHERE c_num=#{c_num}
+  </delete>
+ 
+  <!-- 01_01. 게시글 전체목록 조회 및 검색 조회까지 -->  
+<select id="listAll" resultType="com.spring.domain.cataractVO">
+SELECT c_num, c_id, c_name, c_catecode, c_detail, c_regdate, c_img FROM cataract 
+<include refid="search"></include> <!-- 질의어에 해당부분을 추가 -->
+<include refid="pageingFooter"></include> <!-- 페이징 추가 -->
+</select> 
+ 
+  
+  <!-- 01_02. 게시글 레코드 갯수 -->
+  <select id="countArticle" resultType="int"> 
+   SELECT COUNT(*) FROM cataract 
+  
+  <!-- WHERE절을 include태그로 삽입 -->
+  <include refid="search"></include>
+  </select>
+  
+  <!-- sql code 조각 -->
+  <!--  반복되는 sql의 일부를 sql태그를 이용하여 따로 빼둘 수 있다.-->
+<sql id = "search">
+	<choose>
+		<when test="searchOption == 'all'">
+			<!-- 모든곳에서 조회 -->
+			WHERE (c_id like concat('%',#{keyword},'%')
+			OR c_name like concat('%',#{keyword},'%')
+			OR c_detail like concat('%',#{keyword},'%'))
+		</when>
+	<otherwise>
+			<!-- 해당부분에서만 조회 -->
+			WHERE (${searchOption} like concat('%',#{keyword},'%'))
+	</otherwise>
+	</choose>		
+</sql>
+
+	<!-- 페이징 sql -->
+	<!-- 검색 개수를 제한 Limit offset  -->
+	<sql id="pageingFooter">	    
+	   <!--  LIMIT #{end} OFFSET #{start}  -->
+	   		 LIMIT #{end} OFFSET #{start} 
+	</sql>	
+</mapper>
+  
+  

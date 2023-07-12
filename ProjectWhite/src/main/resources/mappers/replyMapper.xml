@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *Mapper.xml 정의->*(테이블명)Mapper.xml -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 댓글 처리 batis --> 
+<mapper namespace="reply">
+	<!-- 댓글 등록 -->
+	<!-- 사용자이름은 저장에서 생략...사용자 아이디(replyer)존재, 사용자이름은 불필요 -->
+	<insert id="insertReply">
+		INSERT INTO reply(bno, replytext, replyer) 
+		VALUES (#{bno}, #{replytext}, #{replyer})
+	</insert>
+	
+	<!-- 댓글 출력 -->
+	<!-- 사용자 이름이 댓글에 필요하면 member테이블과 조인 -->
+	<!-- 댓글과 멤버테이블의 아이디가 동일한 자료를 조인해서 사용 -->
+	<select id="listReply" resultType="com.spring.domain.ReplyVO">
+		SELECT a.rno, a.bno, a.replytext, a.replyer, a.re_regdate, a.re_updatedate, a.re_username 
+		FROM reply a LEFT JOIN member b on a.replyer = b.username 
+		WHERE bno=#{bno}  
+	</select>
+</mapper>
+<!-- mapper를 완성한 후에 dao로 가서 작업 -->

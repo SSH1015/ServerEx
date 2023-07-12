@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *Mapper.xml 정의->*(테이블명)Mapper.xml -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- 다른 mapper와 중복처리되지 않도록 네임스페이스 기재 -->
+<mapper namespace="eye">
+
+<select id="eyeList" resultType="com.spring.domain.eyeListVO">
+SELECT eye_num, eye_list, eye_location, eye_ringnum, eye_latitude, eye_longitude FROM eyelist order by eye_num 
+</select>
+
+
+  
+<select id="listAll" resultType="com.spring.domain.eyeListVO">
+SELECT eye_num, eye_list, eye_location, eye_ringnum, eye_latitude, eye_longitude FROM eyelist
+<include refid="search"></include> <!-- 질의어에 해당부분을 추가 -->
+<include refid="pageingFooter"></include> <!-- 페이징 추가 -->
+</select> 
+
+<!-- 01_02. 게시글 레코드 갯수 -->
+  <select id="countArticle" resultType="int"> 
+   SELECT COUNT(*) FROM eyelist 
+   
+     <!-- WHERE절을 include태그로 삽입 -->
+  <include refid="search"></include>
+  </select>  
+ 
+  <!-- sql code 조각 -->
+  <!--  반복되는 sql의 일부를 sql태그를 이용하여 따로 빼둘 수 있다.-->
+<sql id = "search">
+	<choose>
+		<when test="searchOption == 'all'">
+			<!-- 모든곳에서 조회 -->
+			WHERE (eye_num like concat('%',#{keyword},'%')
+			OR eye_list like concat('%',#{keyword},'%')
+			OR eye_location like concat('%',#{keyword},'%'))
+		</when>
+	<otherwise>
+			<!-- 해당부분에서만 조회 -->
+			WHERE (${searchOption} like concat('%',#{keyword},'%'))
+	</otherwise>
+	</choose>		
+	</sql>
+	<!-- 페이징 sql -->
+	<!-- 검색 개수를 제한 Limit offset  -->
+	<sql id="pageingFooter">	    
+	   <!--  LIMIT #{end} OFFSET #{start}  -->
+	   		 LIMIT #{end} OFFSET #{start} 
+	</sql>
+	
+	</mapper>

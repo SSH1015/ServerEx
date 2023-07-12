@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- *Mapper.xml 정의->*(테이블명)Mapper.xml -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- 다른 mapper와 중복처리되지 않도록 네임스페이스 기재 -->
+<mapper namespace="member">
+
+<select id="memberList" resultType="com.spring.domain.MemberVO">
+	SELECT userid, username, useremail, userregdate, admin FROM member order by username
+</select>
+<!-- 02. 회원 등록  -->
+<insert id="insertMember">
+INSERT INTO member(userid, userpw, username, useremail) 
+VALUES (#{userid}, #{userpw}, #{username}, #{useremail}) 
+</insert>
+<!-- 회원정보 상세 조회 -->
+<select id="viewMember" resultType="com.spring.domain.MemberVO">
+		SELECT
+		userid,
+		username,
+		useremail,
+		userregdate,
+		userupdatedate,
+		admin
+		FROM member
+		WHERE userid=#{userid}
+	</select>
+	<select id="view" resultType="com.spring.domain.MemberVO">
+		SELECT
+		userid,
+		username,
+		useremail,
+		userregdate,
+		userupdatedate,
+		admin
+		FROM member
+		WHERE userid=#{userid}
+	</select>
+	
+	<!-- 04. 회원정보 수정처리 -->
+	<update id="updateMember">
+	UPDATE member
+	SET
+	userpw=#{userpw},
+	username=#{username},
+	useremail=#{useremail},
+	userupdatedate=NOW()
+	WHERE
+	userid=#{userid}
+	</update>
+	<!-- 05. 회원정보 삭제처리 -->
+	<delete id="deleteMember">
+	DELETE FROM member
+	WHERE userid=#{userid}
+	</delete>
+	<!-- 06. 비밀번호 체크 -->
+
+<select id="checkPw" resultType="int">
+	SELECT
+		COUNT(*)
+	FROM member
+	WHERE userid = #{userid} AND userpw = #{userpw}
+</select>
+
+<select id="loginCheck" resultType="String">
+		SELECT username FROM member
+		WHERE userid=#{userid} AND userpw=#{userpw}
+	</select>
+</mapper>
